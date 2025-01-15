@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import useTitle from "../../hooks/useTitle"
 import PulseLoader from 'react-spinners/PulseLoader'
 import {useReactTable,getCoreRowModel, getGroupedRowModel,getExpandedRowModel,flexRender, getSortedRowModel} from '@tanstack/react-table'
-import '/Users/josepadilla/Documents/HarborReactClient/harborreactclient/src/printStyles.css'; // Import the print styles
+
 import { useReactToPrint } from "react-to-print";
 
 
