@@ -45,6 +45,7 @@ const Member = ({ memberId }) => {
       <td data-label="City">{member.city}</td>
       <td data-label="State">{member.state}</td>
       <td data-label="Zip Code">{member.zip_code}</td>
+      <td data-label="Email">{member.email}</td>
       <td className="text-center">
         <Button
           variant="light"
