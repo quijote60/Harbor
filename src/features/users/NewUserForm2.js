@@ -1,10 +1,10 @@
-import {useEffect}from 'react';
+import React ,{useEffect}from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useAddNewUserMutation } from "./usersApiSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
-import { PersonBadge, Incognito } from 'react-bootstrap-icons';
+import { PersonBadge, Incognito, PersonGear } from 'react-bootstrap-icons';
 import { 
     Button, 
     Card, 
@@ -23,214 +23,148 @@ import { ROLES } from "../../config/roles";
 
 const NewUserForm2 = () => {
     useTitle('Harbor Bible: New Counter');
+    const [addNewUser, { isLoading, isSuccess, isError, error }] = useAddNewUserMutation();
     const navigate = useNavigate();
-
-    const [addNewUser, {
-        isLoading,
-        isSuccess,
-        isError,
-        error
-    }] = useAddNewUserMutation();
-
-    // Initial form values
-    const initialValues = {
-        username: '',
-        password: '',
-        re_password: '',
-        roles: ['Employee']
-    };
-
-    const validationSchema = Yup.object().shape({
-        username: Yup.string()
-            .matches(/^[A-z]{3,20}$/, 'Username must be 3-20 letters')
-            .required('Username is required'),
-        password: Yup.string()
-            .matches(/^[A-z0-9!@#$%]{4,12}$/, 'Password must be 4-12 characters including !@#$%')
-            .required('Password is required'),
-        re_password: Yup.string()
-            .oneOf([Yup.ref('password'), null], 'Passwords must match')
-            .required('Confirm password is required'),
-        roles: Yup.array()
-            .min(1, 'At least one role is required')
+  
+    const UserValidationSchema = Yup.object().shape({
+      username: Yup.string()
+        .matches(/^[A-z]{3,20}$/, 'Username must be 3-20 letters')
+        .required('Username is required'),
+      password: Yup.string()
+        .matches(/^[A-z0-9!@#$%]{4,12}$/, 'Password must be 4-12 characters including !@#$%')
+        .required('Password is required'),
+      re_password: Yup.string()
+        .oneOf([Yup.ref('password'), null], 'Passwords must match')
+        .required('Confirm password is required'),
+      roles: Yup.array()
+        .min(1, 'At least one role is required')
     });
-
-    // Handle form submission
+  
+    React.useEffect(() => {
+      if (isSuccess) {
+        navigate('/dash/users');
+      }
+      if (isError) {
+        toast.error(error?.data?.message || "An error occurred");
+      }
+    }, [isSuccess, isError, navigate, error]);
+  
     const handleSubmit = async (values, { setSubmitting }) => {
-        try {
-            // Extract only necessary fields for user creation
-            const { username, password, roles } = values;
-            
-            // Attempt to add new user
-            await addNewUser({ username, password, roles });
-            
-            // Reset submitting state
-            setSubmitting(false);
-        } catch (err) {
-            // Handle any submission errors
-            toast.error(error?.data?.message || "An error occurred", {
-                className: "custom-toast",
-                draggable: true,
-                position: "top-center",
-                theme: "colored"
-            });
-            setSubmitting(false);
-        }
+      try {
+        const { username, password, roles } = values;
+        await addNewUser({ username, password, roles });
+        setSubmitting(false);
+      } catch (err) {
+        toast.error(error?.data?.message || "An error occurred");
+        setSubmitting(false);
+      }
     };
-
-    // Handle successful user creation
-    useEffect(() => {
-        if (isSuccess) {
-            navigate('/dash/users');
-        }
-        if (isError) {
-            toast.error(error?.data?.message || "An error occurred", {
-                className: "custom-toast",
-                draggable: true,
-                position: "top-center",
-                theme: "colored"
-            });
-        }
-    }, [isSuccess, isError, error, navigate]);
-
-    return (
-        <section className="section section-shaped section-member">
-            <div className="d-flex justify-content-center align-items-center">
-                <Container className="pt-lg-7">
-                    <Row className="justify-content-center">
-                        <Col lg="5">
-                            <Card className="bg-secondary shadow border-0">
-                                <CardBody className="px-lg-5 py-lg-5">
-                                    <div className="text-center text-muted mb-4">
-                                        <h2>New User</h2>
-                                    </div>
-                                    
-                                    <Formik
-                                        initialValues={initialValues}
-                                        validationSchema={validationSchema}
-                                        onSubmit={handleSubmit}
-                                    >
-                                        {({ 
-                                            values, 
-                                            errors, 
-                                            touched, 
-                                            handleChange, 
-                                            handleBlur, 
-                                            isSubmitting 
-                                        }) => (
-                                            <Form>
-                                                {/* Username Field */}
-                                                <BootstrapForm.Group className="mb-3">
-                                                    <BootstrapForm.Label>
-                                                        Username: <span className="nowrap">[3-20 letters]</span>
-                                                    </BootstrapForm.Label>
-                                                    <InputGroup>
-                                                        <InputGroup.Text>
-                                                            <PersonBadge />
-                                                        </InputGroup.Text>
-                                                        <Field
-                                                            as={BootstrapForm.Control}
-                                                            type="text"
-                                                            name="username"
-                                                            placeholder="User Name*"
-                                                            autoComplete="new-password"
-                                                        />
-                                                    </InputGroup>
-                                                    <ErrorMessage 
-                                                        name="username" 
-                                                        component="div" 
-                                                        className="text-danger" 
-                                                    />
-                                                </BootstrapForm.Group>
-
-                                                {/* Password Field */}
-                                                <BootstrapForm.Group className="mb-3">
-                                                    <BootstrapForm.Label>
-                                                        Password: <span className="nowrap">[4-12 chars incl. !@#$%]</span>
-                                                    </BootstrapForm.Label>
-                                                    <InputGroup>
-                                                        <InputGroup.Text>
-                                                            <Incognito />
-                                                        </InputGroup.Text>
-                                                        <Field
-                                                            as={BootstrapForm.Control}
-                                                            type="password"
-                                                            name="password"
-                                                            placeholder="Password*"
-                                                        />
-                                                    </InputGroup>
-                                                    <ErrorMessage 
-                                                        name="password" 
-                                                        component="div" 
-                                                        className="text-danger" 
-                                                    />
-                                                </BootstrapForm.Group>
-
-                                                {/* Confirm Password Field */}
-                                                <BootstrapForm.Group className="mb-3">
-                                                    <BootstrapForm.Label>Confirm Password</BootstrapForm.Label>
-                                                    <InputGroup>
-                                                        <InputGroup.Text>
-                                                            <Incognito />
-                                                        </InputGroup.Text>
-                                                        <Field
-                                                            as={BootstrapForm.Control}
-                                                            type="password"
-                                                            name="re_password"
-                                                            placeholder="Confirm Password*"
-                                                        />
-                                                    </InputGroup>
-                                                    <ErrorMessage 
-                                                        name="re_password" 
-                                                        component="div" 
-                                                        className="text-danger" 
-                                                    />
-                                                </BootstrapForm.Group>
-
-                                                {/* Roles Field */}
-                                                <BootstrapForm.Group className="mb-3">
-                                                    <BootstrapForm.Label>ASSIGNED ROLES:</BootstrapForm.Label>
-                                                    <Field
-                                                        as={BootstrapForm.Select}
-                                                        name="roles"
-                                                        multiple
-                                                        size="3"
-                                                        style={{width: "auto"}}
-                                                    >
-                                                        {Object.values(ROLES).map(role => (
-                                                            <option 
-                                                                key={role} 
-                                                                value={role}
-                                                            >
-                                                                {role}
-                                                            </option>
-                                                        ))}
-                                                    </Field>
-                                                    <ErrorMessage 
-                                                        name="roles" 
-                                                        component="div" 
-                                                        className="text-danger" 
-                                                    />
-                                                </BootstrapForm.Group>
-
-                                                {/* Submit Button */}
-                                                <Button 
-                                                    variant="primary" 
-                                                    type="submit" 
-                                                    disabled={isSubmitting || isLoading}
-                                                >
-                                                    Save
-                                                </Button>
-                                            </Form>
-                                        )}
-                                    </Formik>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-        </section>
+  
+    const InputField = ({ name, label, type = 'text', Icon, as, children, hint }) => (
+      <div className="form-group mb-3">
+        <label htmlFor={name} className="form-label fw-medium">
+          {label}
+          {hint && <span className="nowrap ms-2 text-muted small">[{hint}]</span>}
+        </label>
+        <InputGroup>
+          <InputGroup.Text>
+            <Icon size={20} />
+          </InputGroup.Text>
+          <Field
+            as={as}
+            type={type}
+            id={name}
+            name={name}
+            className="form-control"
+          >
+            {children}
+          </Field>
+        </InputGroup>
+        <ErrorMessage name={name} component="div" className="text-danger mt-1 small" />
+      </div>
     );
-};
-
-export default NewUserForm2;
+  
+    return (
+      <div className="h-100 pt-md-5 pt-3">
+        <div className="shape shape-style-1 shape-default">
+          {[...Array(8)].map((_, i) => (
+            <span key={i} />
+          ))}
+        </div>
+  
+        <div className="container mb-4">
+          <div className="row justify-content-center">
+            <div className="col-12 col-md-8">
+              <div className="card shadow">
+                <div className="card-body p-md-4 p-3" style={{ zIndex: 2 }}>
+                  <h2 className="text-center mb-4 fs-3">New User</h2>
+  
+                  <Formik
+                    initialValues={{
+                      username: '',
+                      password: '',
+                      re_password: '',
+                      roles: ['Employee']
+                    }}
+                    validationSchema={UserValidationSchema}
+                    onSubmit={handleSubmit}
+                  >
+                    {({ isSubmitting }) => (
+                      <Form className="px-md-2">
+                        <InputField
+                          name="username"
+                          label="Username"
+                          Icon={PersonBadge}
+                          hint="3-20 letters"
+                        />
+  
+                        <InputField
+                          name="password"
+                          label="Password"
+                          type="password"
+                          Icon={Incognito}
+                          hint="4-12 chars incl. !@#$%"
+                        />
+  
+                        <InputField
+                          name="re_password"
+                          label="Confirm Password"
+                          type="password"
+                          Icon={Incognito}
+                        />
+  
+                        <InputField
+                          name="roles"
+                          label="Assigned Roles"
+                          as="select"
+                          Icon={PersonGear}
+                          multiple
+                        >
+                          {Object.values(ROLES).map(role => (
+                            <option key={role} value={role}>{role}</option>
+                          ))}
+                        </InputField>
+  
+                        <div className="d-grid d-md-flex justify-content-md-end">
+                          <Button 
+                            type="submit" 
+                            disabled={isSubmitting || isLoading}
+                            variant="primary"
+                            className="px-4 py-2"
+                          >
+                            {isSubmitting ? 'Saving...' : 'Save'}
+                          </Button>
+                        </div>
+                      </Form>
+                    )}
+                  </Formik>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  
+  export default NewUserForm2;
