@@ -25,10 +25,17 @@ const EditContributionForm = ({ contribution, members, categories }) => {
     const [updateContribution, { isLoading: isUpdateLoading }] = useUpdateContributionMutation();
     const [deleteContribution] = useDeleteContributionMutation();
   
+ // Format the date to YYYY-MM-DD
+ const formatDate = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toISOString().split('T')[0];
+};
+
     const initialValues = {
       member: contribution.member,
       category: contribution.category,
-      date: new Date().toISOString().split('T')[0],
+      date: formatDate(contribution.date),  // Format the date here
       notes: contribution.notes,
       amount: contribution.amount
     };
@@ -50,7 +57,9 @@ const EditContributionForm = ({ contribution, members, categories }) => {
           // Transform empty string to null for the notes field
           const transformedValues = {
             ...values,
-            notes: values.notes?.trim() || null
+            notes: values.notes?.trim() || null,
+            // Ensure date is in the correct format for the backend
+            date: new Date(values.date).toISOString()
           };
       
           await updateContribution({

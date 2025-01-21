@@ -28,7 +28,7 @@ const NewUserForm2 = () => {
   
     const UserValidationSchema = Yup.object().shape({
       username: Yup.string()
-        .matches(/^[A-z]{3,20}$/, 'Username must be 3-20 letters')
+      .matches(/^[A-Za-z0-9]{3,20}$/, 'Username must be 3-20 characters (letters and numbers only)')
         .required('Username is required'),
       password: Yup.string()
         .matches(/^[A-z0-9!@#$%]{4,12}$/, 'Password must be 4-12 characters including !@#$%')
@@ -60,7 +60,7 @@ const NewUserForm2 = () => {
       }
     };
   
-    const InputField = ({ name, label, type = 'text', Icon, as, children, hint }) => (
+    const InputField = ({ name, label, type = 'text', Icon, as, children, hint, isMulti }) => (
       <div className="form-group mb-3">
         <label htmlFor={name} className="form-label fw-medium">
           {label}
@@ -75,11 +75,18 @@ const NewUserForm2 = () => {
             type={type}
             id={name}
             name={name}
-            className="form-control"
+            className={`form-control ${isMulti ? 'form-select' : ''}`}
+            multiple={isMulti}
+            size={isMulti ? "3" : undefined}
           >
             {children}
           </Field>
         </InputGroup>
+        {isMulti && (
+          <small className="text-muted mt-1 d-block">
+            Hold Ctrl (Windows) or Cmd (Mac) to select multiple roles
+          </small>
+        )}
         <ErrorMessage name={name} component="div" className="text-danger mt-1 small" />
       </div>
     );
@@ -138,7 +145,7 @@ const NewUserForm2 = () => {
                           label="Assigned Roles"
                           as="select"
                           Icon={PersonGear}
-                          multiple
+                          isMulti={true}
                         >
                           {Object.values(ROLES).map(role => (
                             <option key={role} value={role}>{role}</option>

@@ -97,6 +97,7 @@ const DashHeader = () => {
             <Nav.Link href="/dash/contributions/new" style={{ color: "white" }}>New Contribution</Nav.Link>
         )
     }
+    
 
     let newCategoryButton = null
     if (isManager || isAdmin) {
@@ -126,6 +127,12 @@ const DashHeader = () => {
     if (!CONTRIBUTIONS_REGEX.test(pathname)&& pathname.includes('/dash')) {
         contributionButton = (
             <Nav.Link href="/dash/contributions" style={{ color: "white" }}>Contributions</Nav.Link>
+        )
+    }
+    let reportButton = null
+    if (pathname.includes('/dash')) {
+        reportButton = (
+            <Nav.Link href="/dash/contributions/report" style={{ color: "white" }}>Report</Nav.Link>
         )
     }
 
@@ -162,10 +169,12 @@ const DashHeader = () => {
         buttonContent = (
             <>
                 {newContributionButton}
+                
                 {newMemberButton}
                 {newCategoryButton}
                 {newUserButton}
                 {contributionButton}
+                {reportButton}
                 {memberButton}
                 {categoryButton}
                 {userButton}
@@ -183,6 +192,10 @@ const DashHeader = () => {
         
         if (!CONTRIBUTIONS_REGEX.test(pathname) && pathname.includes('/dash')) {
             navItems.push({ to: '/dash/contributions', text: 'Contributions' });
+        }
+
+        if (!CONTRIBUTIONS_REGEX.test(pathname) && pathname.includes('/dash')) {
+            navItems.push({ to: '/dash/contributions/report', text: 'Report' });
         }
         
         if (!MEMBERS_REGEX.test(pathname) && pathname.includes('/dash')) {
