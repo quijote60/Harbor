@@ -21,20 +21,21 @@ const ContributionsTable = ({ contributions }) => {
 
   return (
     <div>
-      <Table striped bordered hover>
+    
+      <Table striped bordered hover responsive>
         <thead>
           <tr>
-            <th>Category</th>
-            <th>Member</th>
-            <th>Date</th>
-            <th>Note</th>
-            <th>Amount</th>
+            <th class="text-left">Category</th>
+            <th class="text-left">Member</th>
+            <th class="text-left">Date</th>
+            <th class="text-left">Note</th>
+            <th class="text-right">Amount</th>
           </tr>
         </thead>
         <tbody>
           {Object.entries(groupedContributions).map(([category, { total, contributions }]) => (
             <React.Fragment key={category}>
-              <tr>
+              <tr style={{ backgroundColor: '#f5f5f5' }}> {/* Optional category row styling */}
                 <td colSpan={5}>
                   <b>{category}</b> (Total: ${total.toFixed(2)})
                 </td>
@@ -42,10 +43,10 @@ const ContributionsTable = ({ contributions }) => {
               {contributions.map((contribution) => (
                 <tr key={contribution.id}>
                   <td></td>
-                  <td>{contribution.member_last_name}</td>
-                  <td>{contribution.date}</td>
-                  <td>{contribution.note}</td>
-                  <td>${contribution.amount.toFixed(2)}</td>
+                  <td class="text-left"> {contribution.member_last_name}</td>
+                  <td class="text-left">{contribution.date}</td>
+                  <td class="text-left">{contribution.note}</td>
+                  <td class="text-right">{contribution.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td> {/* Using currency formatter */}
                 </tr>
               ))}
             </React.Fragment>
@@ -53,8 +54,8 @@ const ContributionsTable = ({ contributions }) => {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan={4}><b>Grand Total</b></td>
-            <td>${grandTotal.toFixed(2)}</td>
+            <td colSpan={4} style={{ textAlign: 'right', fontWeight: 'bold' }}>Grand Total: </td>
+            <td style={{ textAlign: 'right', fontWeight: 'bold' }}>${grandTotal.toFixed(2)}</td>
           </tr>
         </tfoot>
       </Table>

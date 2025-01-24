@@ -70,6 +70,12 @@ body {
   padding: 60px 20px;
   z-index: 1;
 }
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
 
 .card-body {
   padding: clamp(1.5rem, 5vw, 3rem);
@@ -285,6 +291,14 @@ font-size: clamp(1.25rem, 4vw, 1.5rem);
   background: white;
   border-radius: 2px;
 }
+.title-report{
+  background: white;
+  text-align: center;
+  border: none;
+}
+.signature{
+  background: white;
+}
 
 .welcome-section {
   position: relative;
@@ -323,6 +337,9 @@ font-size: clamp(1.25rem, 4vw, 1.5rem);
 .welcome-header h1 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
+}
+.signature {
+  display: none; /* Hide by default */
 }
 .date {
   font-size: 1.1rem;
@@ -743,17 +760,86 @@ font-size: clamp(1.25rem, 4vw, 1.5rem);
 }
 
 @media print {
+  @page {
+    margin: 1.5cm; /* Define consistent margins for all pages */
+  }
   body {
     visibility: visible !important;
+    font-family: Arial, sans-serif; /* Cleaner font for readability */
+    font-size: 12px; /* Standardize font size */
+  }
+
+  .btn, .modal, .modal-backdrop {
+    display: none !important;
   }
 
   .print-container {
     display: block !important;
-    position: relative !important;
-    visibility: visible !important;
-    background-color: white !important;
-    width: 100% !important; /* Ensure full width */
-    height: auto !important; /* Allow for flexible height */
+    /*position: relative !important; 
+    visibility: visible !important; */
+    background-color: white ;
+    width: 100%; /* Ensure full width */
+    height: auto; /* Allow for flexible height */
+    
+    padding: 20px; /* Add padding for better readability */
+    font-size: 0.9rem;
+    
+    page-break-after: always; 
+    
+   
+  }
+  
+  .print-container Table {
+    width: 100%; /* Ensure table spans full width */
+    border-collapse: collapse; /* Neater borders */
+  }
+  .print-container th {
+    background-color: #f4f4f4; /* Light gray for headers */
+    text-align: left; /* Align text for readability */
+    padding: 8px;
+    border: 1px solid #ddd; /* Subtle border for structure */
+    
+  }
+  .print-container td {
+    border: 1px solid #ddd; /* Subtle border for table cells */
+    padding: 8px;
+    
+  }
+ 
+
+  
+  
+    .title-report {
+      text-align: center; /* Center-align the title */
+    margin-bottom: 1.5rem;
+    font-size: 16px; /* Slightly larger font size */
+    font-weight: bold;
+      }
+      .signature {
+        display: block; 
+        margin-top: 20px;
+    text-align: left; /* Right-align the footer */
+    justify-content: space-between;
+    font-size: 12px;
+    color: gray;}
+    .no-border {
+      border: none !important;
+    }
+    .section {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+  Table { 
+   
+    width: 100%; /* Adjust width as needed */
+  }
+  th,
+  td {
+    padding: 5px; /* Add some padding for readability */
+  }
+  .no-border {
+    border: none; /* Remove border from the title */
   }
 
   /* Force all elements inside to be visible */
@@ -766,6 +852,7 @@ font-size: clamp(1.25rem, 4vw, 1.5rem);
     overflow: visible !important;
   }
 }
+
 
 input[type="number"] {
   -moz-appearance: textfield;

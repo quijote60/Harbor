@@ -17,11 +17,12 @@ const ContributionsPage = () => {
     }
   );
 
-  const tableRef = useRef();
+  //const tableRef = useRef();
+  const printRef = useRef(); // Renamed for clarity
 
   const handlePrint = useReactToPrint({
-    content: () => tableRef.current,
-  });
+    content: () => printRef.current
+  }); 
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -158,20 +159,29 @@ const ContributionsPage = () => {
 
       <div>
         {formattedItems.length > 0 ? (
-          <div>
-            <h1 className="mb-4">
+          <>
+          <div className='print-container' ref={printRef} >
+            <h1 className="mb-4 title-report">
               Contributions for {displayDate}
             </h1>
-            <div ref={tableRef} className="mb-4" style={{ minHeight: '200px' }}>
+            <div className="mb-4" style={{ minHeight: '200px' }}>
+
               <ContributionsTable contributions={formattedItems} />
-            </div>          
+              
+            </div>  
+            <div className='signature'>
+            <h3>Signature counter 1: </h3>
+            <h3>Signature counter 2: </h3>
+            </div>  
+            </div>     
             <button 
-              className="btn btn-secondary" 
+              className="btn btn-primary" 
               onClick={handlePrint}
             >
               Print Contributions Table
             </button>
-          </div>
+          
+          </>
         ) : (
           <div className="alert alert-info">
             No contributions found for {displayDate}.
