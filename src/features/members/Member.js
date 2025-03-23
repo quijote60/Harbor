@@ -51,7 +51,7 @@ const Member = ({ memberId }) => {
           variant="light"
           size="sm"
           onClick={handleEdit}
-          className="rounded-circle p-2"
+          className="rounded-circle p-2 edit-column"
           title="Edit member"
         >
             <FontAwesomeIcon 

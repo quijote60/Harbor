@@ -77,6 +77,7 @@ body {
   text-align: right;
 }
 
+
 .card-body {
   padding: clamp(1.5rem, 5vw, 3rem);
 }
@@ -100,6 +101,7 @@ align-items: center;
   line-height: 1.5;
 }
 
+
 .input-group-text {
   background-color: #f8f9fa;
   border: 1px solid #dee2e6;
@@ -112,6 +114,63 @@ border: 1px solid #ddd;
 border-radius: 4px;
 font-size: clamp(0.875rem, 2.5vw, 1rem);
 transition: border-color 0.2s;
+}
+.multi-column-container {
+  column-count: 4; /* Number of columns */
+  column-gap: 20px; /* Space between columns */
+}
+
+.multi-column-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.multi-column-container th,
+.multi-column-container td {
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+.multi-column-container thead {
+  position: sticky;
+  top: 0;
+  background-color: #f9f9f9;
+}
+
+.multi-column-container tr {
+  display: inline-block;
+  break-inside: avoid; /* Prevent breaking rows across columns */
+}
+
+.multi-column-container tbody {
+  display: block;
+  max-height: 80vh; /* Ensure scrollable area */
+  overflow-y: auto;
+}
+.multi-column-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+Table {
+  width: auto;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+thead th {
+  background-color: #f5f5f5;
+  text-align: left;
+}
+
+tbody tr {
+  break-inside: avoid;
 }
 
 .form-container {
@@ -296,8 +355,77 @@ font-size: clamp(1.25rem, 4vw, 1.5rem);
   text-align: center;
   border: none;
 }
+.footer-tax{
+  background: white;
+  font-size: x-large;
+  padding: 20px;
+}
 .signature{
   background: white;
+}
+.footer-content {
+  display: flex; /* Use flexbox for the main layout */
+  align-items: flex-start; /* Align items to the top */
+  width: 100%; /* Ensure it takes full width */
+}
+
+.treasurer-section, .signature-section, .date-section {
+  padding: 0;
+  margin: 0;
+  display: flex; /* Use flexbox for alignment within each section */
+  align-items: center; /* Vertically center the content */
+  white-space: nowrap; /* Prevent content from wrapping */
+}
+
+.treasurer-section {
+  width: 25%; /* Adjust widths as needed */
+  text-align: left;
+}
+
+.signature-section {
+  width: 50%; /* Adjust widths as needed */
+  flex-direction: column; /* Stack line and name vertically */
+  align-items: center;
+}
+
+
+
+
+
+.date-section {
+  width: 25%; /* Adjust widths as needed */
+  text-align: right;
+  justify-content: flex-end; /* Align date to the right */
+}
+
+/* Optional: Add some margin below the signature line for the date */
+
+
+
+
+
+
+
+
+
+
+.title-tax{
+  background: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 50px;
+  
+}
+.tax-button {
+  margin-top: 60px;
+}
+.title-subtax{
+  background: white;
+  text-align: center;
+}
+.title-taxmember{
+  background: white;
+  padding: 20px;
 }
 
 .welcome-section {
@@ -424,6 +552,65 @@ font-size: clamp(1.25rem, 4vw, 1.5rem);
 }
 .desktop-row {
   display: table-row;
+}
+
+
+
+.signature-area {
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+}
+
+.treasurer-label {
+  margin-right: 1rem;
+  white-space: nowrap;
+}
+
+.signature-area {
+  display: flex;
+  align-items: center; /* Ensure the label and signature are vertically aligned */
+  position: relative; /* Add this to make the signature-line position relative to this container */
+}
+
+.treasurer-label {
+  margin-right: 1rem;
+  white-space: nowrap;
+}
+
+.signature-wrapper {
+  display: flex;
+  flex-direction: column;
+  position: relative; /* Add this to position the signature-line and name correctly */
+}
+
+.signature-line {
+  border-top: 2px solid black;
+  width: 300px;
+  height: 1px;
+  position: absolute; /* Position the line absolutely */
+  top: 50%; /* Adjust this to align the line with the label */
+  left: 0;
+}
+
+.signature-name {
+  margin-top: 30px; /* Adjust this value to bring the name down below the line */
+  text-align: center; /* Center the name below the line */
+  margin-left: 80px;
+}
+.date-wrapper {
+  display: flex;
+  align-items: center; /* Align the date label and value horizontally */
+  margin-left: 1rem; /* Add some space between the signature and date */
+}
+
+.date-label {
+  margin-right: 0.5rem; /* Space between "Date:" and the date value */
+  margin-left: 200px;
+  white-space: nowrap;
+}
+
+.date-value {
+  white-space: nowrap;
 }
 
 .desktop-row td {
@@ -865,10 +1052,127 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 
+@media print {
+  body * {
+    visibility: hidden;
+  }
 
+  .printable-table, .printable-table * {
+    visibility: visible !important;
+  }
 
+  /* Target table elements directly for styling */
+  .printable-table { /* Target the table itself */
+    width: 100% !important;
+    border-collapse: collapse !important; /* Essential for table borders */
+  }
+  .printable-table th, 
+  .printable-table td {
+    border: 1px solid #000 !important; /* Use !important to override other styles */
+    padding: 8px !important;
+    box-sizing: border-box !important; /* Include padding and border in width */
+    text-align: left !important; /* Default text alignment for table cells */
+  }
 
+  .printable-table th {
+    background-color: #f1f1f1 !important;
+    font-weight: bold !important; /* Make headers stand out */
+  }
 
+  /* Hide sort icons, edit column, and other elements */
+  .printable-table .sort-icon, 
+  .printable-table .sortable-header::after,
+  .printable-table .edit-column,
+  .print-hidden {
+    display: none !important;
+  }
+
+  /* Ensure table is displayed as a table */
+  .printable-table {
+    display: table !important;
+  }
+  .printable-table thead {
+    display: table-header-group !important;
+  }
+  .printable-table tbody {
+    display: table-row-group !important;
+  }
+  .printable-table tr {
+    display: table-row !important;
+  }
+  .printable-table th, .printable-table td {
+    display: table-cell !important;
+  }
+
+    /* Important: Reset any styles that might affect table layout */
+    .printable-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+    .printable-table th, .printable-table td {
+        box-sizing: border-box !important; /* Include padding and border in width */
+    }
+    @page {
+      size: landscape;
+      margin: 1cm; /* Adjust as needed */
+    }
+    .printable-table .edit-column { /* Or a more specific selector if needed */
+      display: none !important;
+    }
+
+}
+
+@media print {
+  .btn-print, .tax-button, .modal {
+    display: none !important;
+  }
+
+  body {
+    padding: 20px !important;
+    margin: 0 !important;
+    background: white !important;
+  }
+
+  .container {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .title-tax, .title-subtax, .title-taxmember {
+    text-align: center !important; /* Center titles */
+  }
+
+  .signature-area {
+    display: flex !important;
+    flex-direction: column !important; /* Stack signature elements */
+    align-items: center !important; /* Center signature elements */
+  }
+
+  .treasurer-label, .signature-wrapper, .date-wrapper {
+    margin-bottom: 10px !important; /* Add spacing between signature elements */
+  }
+
+  .church {
+    text-align: center !important;
+  }
+
+  .table-responsive {
+    overflow-x: visible !important; /* Prevent table from being cut off */
+  }
+
+  table {
+    width: 50% !important;
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    border: 1px solid black !important;
+    padding: 1px !important;
+    text-align: left !important; /* Align text to the left in cells */
+  }
+}
 
 
 

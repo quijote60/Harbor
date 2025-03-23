@@ -70,6 +70,12 @@ const Welcome = () => {
                   <Link to="/dash/contributions/report" className="dash-card">
                       <h2>Report</h2>
                   </Link>
+                  <Link to="/dash/contributions/annual" className="dash-card">
+                      <h2>Annual Report</h2>
+                  </Link>
+                  <Link to="/dash/contributions/tax" className="dash-card">
+                      <h2>Tax Report</h2>
+                  </Link>
               </div>
           </div>
       </section>

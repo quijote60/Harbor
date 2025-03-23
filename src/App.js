@@ -30,8 +30,11 @@ import ReportsList from './features/contributions/ReportsList';
 import ContributionsTable from './features/contributions/ContributionsTable';
 import ContributionsPage from './features/contributions/ContributionsPage';
 import ContributionSearch from './features/contributions/ConstributionSearch';
-import { ROLES } from './config/roles'
+import { ROLES } from './config/roles';
+import AnnualContribution from './features/contributions/AnnualContribution';
 import SimpleTable from './features/contributions/SimpleTable';
+import ContributionTax from './features/contributions/ContributionTax';
+import TaxContribution from './features/contributions/TaxContribution';
 
 function App() {
   useTitle('Harbor Bible')
@@ -68,7 +71,9 @@ function App() {
             <Route path=":id" element={<EditContribution />} />
             <Route path='report' element ={<ContributionsPage/>} />
             <Route path="search" element={<SearchContribution/>} />
+            <Route path="annual" element={<AnnualContribution/>} />
             <Route path='chart' element={<ContributionsByMonthChart/>} />
+            <Route path='tax' element={<TaxContribution/>} />
           </Route>
           <Route path="users">
             <Route index element={<UsersList />} />

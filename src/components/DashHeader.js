@@ -2,14 +2,7 @@
 import React, { useState , useEffect, useRef} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faFileCirclePlus,
-    faFilePen,
-    faUserGear,
-    faUserPlus,
-    faPerson,
-    faPersonCirclePlus,
-    faSquarePlus,
-    faSquare,
+    
     faRightFromBracket
 } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate, Link, useLocation } from 'react-router-dom';
@@ -42,6 +35,13 @@ const DashHeader = () => {
     const [isMobileNavOpen, setIsMobileNavOpen] = useState(false); 
     const toggleButtonRef = useRef(null); 
     const mobileNavRef = useRef(null);
+
+    // Handle navigation on logout success
+  useEffect(() => {
+    if (isSuccess) {
+      navigate('/login'); // Redirect to login page on successful logout
+    }
+  }, [isSuccess, navigate]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {

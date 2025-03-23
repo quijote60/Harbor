@@ -51,7 +51,7 @@ const NewContributionForm = ({members, categories}) => {
 
     const handleSubmit = async (values, { setSubmitting, resetForm }) => {
       try {
-        await addNewContribution(values);
+        await addNewContribution(values).unwrap(); // Use unwrap to handle the promise directly
         toast.success('Contribution added successfully');
         resetForm();
         navigate('/dash/contributions/new');
