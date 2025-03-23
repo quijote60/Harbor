@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {disableReactDevTools} from '@fvilers/disable-react-devtools'
-import 'assets/'
+
 
 if (process.env.NODE_ENV === 'production') disableReactDevTools()
 
