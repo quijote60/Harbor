@@ -63,14 +63,14 @@ const NewContributionForm = ({members, categories}) => {
     };
 
     const optionsMember = [...members]  // Create a copy of the array to avoid mutating the original
-  .sort((a, b) => a.member_id - b.member_id)  // Sort by member_id numerically
+  .sort((a, b) => a.last_name.localeCompare(b.last_name))  // Sort by last_name alphabetically
   .map(member => {
     return (
       <option
         key={member.id}
         value={member.id}
       > 
-        {member.member_id} - {member.last_name}
+        {member.last_name} - {member.member_id}
       </option>
     )
 });
