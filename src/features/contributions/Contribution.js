@@ -26,17 +26,17 @@ const Contribution = ({ contributionId, contribution }) => {
   return (
     <tr className="align-middle">
       <td data-label="Created" className="py-3">{created}</td>
-      <td data-label="Updated" className="py-3">{updated}</td>
       <td data-label="Member ID" className="py-3">{contribution.member_id}</td>
       <td data-label="Last Name" className="py-3">{contribution.member_last_name}</td>
       <td data-label="Category" className="py-3">{contribution.category_name}</td>
-      <td data-label="Notes" className="py-3">{contribution.notes}</td>
       <td data-label="Amount" className="py-3">
         ${Number(contribution.amount).toLocaleString('en-US', {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}
       </td>
+      <td data-label="Notes" className="py-3">{contribution.notes}</td>
+      
       <td className="py-3 text-center">
         <Button
           variant="light"

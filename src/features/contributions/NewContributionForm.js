@@ -30,9 +30,10 @@ const NewContributionForm = ({members, categories}) => {
   const navigate = useNavigate();
   const dateTest = new Date();
   const dateWithoutTime = dateTest.toISOString().split('T')[0];
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
     
-    console.log(dateWithoutTime);
+   // console.log(dateWithoutTime);
 
     const validationSchema = Yup.object().shape({
       member: Yup.string()
@@ -88,8 +89,10 @@ const NewContributionForm = ({members, categories}) => {
 
   
 
-    const SelectField = ({ name, label, Icon, options }) => (
+    const handleDropdownOpen = () => setDropdownOpen(true);
+    const handleDropdownClose = () => setDropdownOpen(false);
 
+    const SelectField = ({ name, label, Icon, options }) => (
       <BootstrapForm.Group className="mb-3">
         <BootstrapForm.Label htmlFor={name} className="fw-medium">
           {label}
@@ -103,6 +106,8 @@ const NewContributionForm = ({members, categories}) => {
             id={name}
             name={name}
             className="form-control"
+            onFocus={handleDropdownOpen}
+            onBlur={handleDropdownClose}
           >
             <option value="">Select {label}</option>
             {options}
@@ -150,7 +155,7 @@ const NewContributionForm = ({members, categories}) => {
 
 
     return (
-      <div className="h-100 pt-md-5 pt-3">
+      <div className="h-100">
         <div className="shape shape-style-1 shape-default">
           {[...Array(8)].map((_, i) => (
             <span key={i} />
@@ -158,11 +163,11 @@ const NewContributionForm = ({members, categories}) => {
         </div>
   
         {/* Form Section */}
-        <div className="container mb-4">
+        <div className="container mt-5 mb-4">
           <div className="row justify-content-center">
             <div className="col-12 col-md-8">
               <div className="card shadow">
-                <div className="card-body p-md-4 p-3" style={{ zIndex: 2 }}>
+                <div className="card-body p-md-4 p-3">
                   <h2 className="text-center mb-4 fs-3">New Contribution</h2>
                   <Formik
                     initialValues={{
@@ -227,13 +232,13 @@ const NewContributionForm = ({members, categories}) => {
         </div>
   
         {/* Table Section */}
-        <div className="container mb-4">
+        <div className="container mt-5 mb-4">
           <div className="row">
             <div className="col-12">
-              <div className="card shadow">
+              <div className="card shadow" style={{ position: 'relative', zIndex: 1 }}>
                 <div className="card-body p-md-4 p-3">
                   <div className="table-responsive">
-                    <ContributionsList />
+                    <ContributionsList pollingPaused={dropdownOpen} />
                   </div>
                 </div>
               </div>

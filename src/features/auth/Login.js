@@ -1,172 +1,161 @@
-import { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setCredentials } from './authSlice';
+import { useNavigate } from 'react-router-dom';
 import { useLoginMutation } from './authApiSlice';
-import usePersist from '../../hooks/usePersist';
-import useTitle from '../../hooks/useTitle';
-import PulseLoader from 'react-spinners/PulseLoader';
-import { Envelope, Person, Key } from 'react-bootstrap-icons';
+import { setCredentials } from './authSlice';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { toast } from 'react-toastify';
 import {
-  Form,
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  InputGroup,
-  Container,
-  Row,
-  Col,
-} from 'react-bootstrap';
+    Button,
+    Card,
+    CardHeader,
+    CardBody,
+    Col,
+    FormGroup,
+    Label,
+    Input,
+} from 'reactstrap';
+import PulseLoader from 'react-spinners/PulseLoader';
 
 const Login = () => {
-  useTitle('Counter Login');
-  const userRef = useRef();
-  const errRef = useRef();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [errMsg, setErrMsg] = useState('');
-  const [persist, setPersist] = usePersist();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+    const [login, {
+        isLoading,
+        isSuccess,
+        isError,
+        error
+    }] = useLoginMutation();
 
-  const [login, { isLoading }] = useLoginMutation();
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success("Login successful!", {
+                className: "custom-toast",
+                draggable: true,
+                position: "top-center",
+                theme: "colored"
+            });
+            navigate('/dash');
+        }
+        if (isError) {
+            console.log('Error from useEffect:', error);
+            const errorMessage = error?.data?.message ||
+                                error?.data?.error ||
+                                error?.error ||
+                                "Failed to login. Please try again.";
+            toast.error(errorMessage, {
+                className: "custom-toast",
+                draggable: true,
+                position: "top-center",
+                theme: "colored"
+            });
+        }
+    }, [isSuccess, isError, error, navigate]);
 
-  useEffect(() => {
-    userRef.current.focus();
-  }, []);
-
-  useEffect(() => {
-    setErrMsg('');
-  }, [username, password]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const { accessToken } = await login({ username, password }).unwrap();
-      dispatch(setCredentials({ accessToken }));
-      setUsername('');
-      setPassword('');
-      navigate('/dash');
-    } catch (err) {
-      if (!err.status) {
-        setErrMsg('No Server Response');
-      } else if (err.status === 400) {
-        setErrMsg('Missing Username or Password');
-      } else if (err.status === 401) {
-        setErrMsg('Unauthorized');
-      } else {
-        setErrMsg(err.data?.message);
-      }
-      errRef.current.focus();
+    if (isLoading) {
+        return <PulseLoader color={'#FFF'} />;
     }
-  };
 
-  const handleUserInput = (e) => setUsername(e.target.value);
-  const handlePwdInput = (e) => setPassword(e.target.value);
-  const handleToggle = () => setPersist(prev => !prev);
+    const LoginValidationSchema = Yup.object().shape({
+        username: Yup.string()
+            .required('Username is required'),
+        password: Yup.string()
+            .required('Password is required'),
+    });
 
-  if (isLoading) return <PulseLoader color={"#FFF"} />;
-
-  return (
-    <div className="position-relative min-vh-100">
-      {/* Background shapes with proper z-index */}
-      <div 
-        className="position-absolute w-100 h-100 overflow-hidden" 
-        style={{ zIndex: 0 }}
-      >
-        <div className="shape shape-style-1 shape-default">
-          {[...Array(9)].map((_, index) => (
-            <span key={index} className="position-absolute" />
-          ))}
-        </div>
-      </div>
-
-      {/* Main content with higher z-index */}
-      <Container className="position-relative pt-lg-7" style={{ zIndex: 1 }}>
-        <Row className="justify-content-center">
-          <Col lg="5">
-            {/* Error message */}
-            {errMsg && (
-              <div 
-                ref={errRef}
-                className="alert alert-danger text-center mb-3" 
-                role="alert"
-              >
-                {errMsg}
-              </div>
-            )}
-
-            <Card className="bg-secondary shadow border-0">
-              <CardBody className="px-lg-5 py-lg-5">
-                <div className="text-center text-muted mb-4">
-                  <medium>Sign in with credentials</medium>
+    return (
+        <div className="position-relative min-vh-100 d-flex justify-content-center align-items-center" style={{ background: '#f8f9fa' }}>
+            {/* Background shapes with proper z-index */}
+            <div 
+                className="position-absolute w-100 h-100 overflow-hidden" 
+                style={{ zIndex: 0 }}
+            >
+                <div className="shape shape-style-1 shape-default">
+                    {[...Array(9)].map((_, index) => (
+                        <span key={index} className="position-absolute" />
+                    ))}
                 </div>
+            </div>
 
-                <Form onSubmit={handleSubmit}>
-                  <Form.Group className="mb-3">
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <Person />
-                      </InputGroup.Text>
-                      <Form.Control
-                        ref={userRef}
-                        type="text"
-                        id="username"
-                        placeholder="Username"
-                        value={username}
-                        onChange={handleUserInput}
-                        autoComplete="off"
-                        required
-                      />
-                    </InputGroup>
-                  </Form.Group>
-
-                  <Form.Group className="mb-3">
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <Key />
-                      </InputGroup.Text>
-                      <Form.Control
-                        type="password"
-                        placeholder="Password"
-                        id="password"
-                        value={password}
-                        onChange={handlePwdInput}
-                        required
-                      />
-                    </InputGroup>
-                  </Form.Group>
-
-                  <Form.Group className="mb-3">
-                    <Form.Check
-                      type="checkbox"
-                      id="persist"
-                      label="Trust This Device"
-                      onChange={handleToggle}
-                      checked={persist}
-                    />
-                  </Form.Group>
-
-                  <div className="text-center">
-                    <Button
-                      className="my-4 w-100"
-                      variant="primary"
-                      type="submit"
-                      style={{ zIndex: 2, position: 'relative' }}
-                    >
-                      Login
-                    </Button>
-                  </div>
-                </Form>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-    </div>
-  );
+            <Col lg="6" md="8" className="mx-auto" style={{ maxWidth: '600px', zIndex: 1 }}>
+                <Card className="bg-secondary shadow border-0">
+                    <CardHeader className="bg-transparent pb-5">
+                        <div className="text-center mt-2 mb-4">
+                            <h2>Login</h2>
+                        </div>
+                    </CardHeader>
+                    <CardBody className="px-lg-5 py-lg-5">
+                        <Formik
+                            initialValues={{
+                                username: '',
+                                password: '',
+                            }}
+                            validationSchema={LoginValidationSchema}
+                            onSubmit={async (values, { setSubmitting }) => {
+                                try {
+                                    const { accessToken } = await login(values).unwrap();
+                                    dispatch(setCredentials({ accessToken }));
+                                    setSubmitting(false);
+                                    // Success handling is managed by useEffect
+                                } catch (err) {
+                                    setSubmitting(false);
+                                    // Error handling is managed by useEffect
+                                }
+                            }}
+                        >
+                            {({ isSubmitting, errors, touched }) => (
+                                <Form role="form">
+                                    <FormGroup>
+                                        <Label for="username" className="fw-medium">Username</Label>
+                                        <Field
+                                            as={Input}
+                                            type="text"
+                                            name="username"
+                                            id="username"
+                                            autoComplete="off"
+                                            className={`form-control ${touched.username && errors.username ? 'is-invalid' : ''}`}
+                                        />
+                                        <ErrorMessage
+                                            name="username"
+                                            component="div"
+                                            className="invalid-feedback"
+                                        />
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label for="password" className="fw-medium">Password</Label>
+                                        <Field
+                                            as={Input}
+                                            type="password"
+                                            name="password"
+                                            id="password"
+                                            className={`form-control ${touched.password && errors.password ? 'is-invalid' : ''}`}
+                                        />
+                                        <ErrorMessage
+                                            name="password"
+                                            component="div"
+                                            className="invalid-feedback"
+                                        />
+                                    </FormGroup>
+                                    <div className="text-center">
+                                        <Button
+                                            className="mt-4"
+                                            disabled={isSubmitting || isLoading}
+                                            color="primary"
+                                            type="submit"
+                                        >
+                                            {isSubmitting ? 'Logging in...' : 'Login'}
+                                        </Button>
+                                    </div>
+                                </Form>
+                            )}
+                        </Formik>
+                    </CardBody>
+                </Card>
+            </Col>
+        </div>
+    );
 };
 
 export default Login;

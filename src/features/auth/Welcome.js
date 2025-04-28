@@ -1,84 +1,140 @@
 import { Link } from 'react-router-dom'
-import { Container, Row,Col,Card ,CardBody} from 'react-bootstrap'
 import useAuth from '../../hooks/useAuth'
 import useTitle from '../../hooks/useTitle'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { 
+  faUsers, 
+  faList, 
+  faDollarSign, 
+  faSearch, 
+  faChartLine,
+  faCog,
+  faUserPlus,
+  faFileAlt,
+  faCalendarAlt,
+  faReceipt
+} from '@fortawesome/free-solid-svg-icons'
+
 const Welcome = () => {
     const { username, isManager, isAdmin } = useAuth()
     useTitle(`Harbor Bible: ${username}`)
     const date = new Date()
     const today = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'long' }).format(date)
 
+    // Group the menu items by category
+    const memberSection = [
+        { to: "/dash/members", text: "View Members", icon: faUsers },
+        { to: "/dash/members/new", text: "Add New Member", icon: faUserPlus }
+    ];
+
+    const categorySection = isManager || isAdmin ? [
+        { to: "/dash/categories", text: "View Categories", icon: faList },
+        { to: "/dash/categories/new", text: "Add New Category", icon: faList }
+    ] : [];
+
+    const contributionSection = [
+        { to: "/dash/contributions", text: "View Contributions", icon: faDollarSign },
+        { to: "/dash/contributions/new", text: "Add New Contribution", icon: faDollarSign },
+        { to: "/dash/contributions/search", text: "Search Contributions", icon: faSearch },
+        { to: "/dash/contributions/chart", text: "Contributions Chart", icon: faChartLine }
+    ];
+
+    const reportSection = [
+        { to: "/dash/contributions/report", text: "Report", icon: faFileAlt },
+        { to: "/dash/contributions/annual", text: "Annual Report", icon: faCalendarAlt },
+        { to: "/dash/contributions/tax", text: "Tax Report", icon: faReceipt }
+    ];
+
+    const userSection = [
+        { to: "/dash/users", text: "View User Settings", icon: faCog },
+        { to: "/dash/users/new", text: "Add New User", icon: faUserPlus }
+    ];
 
     return (
-      <section className="welcome-section">
-          <div className="shape shape-style-1 shape-default">
-              {[...Array(8)].map((_, i) => (
-                  <span key={i} />
-              ))}
-          </div>
-          
-          <div className="welcome-container">
-              <div className="welcome-header">
-                  <h1>Welcome {username}!</h1>
-                  <p className="date">{today}</p>
-              </div>
+        <section className="welcome-section">
+            <div className="shape shape-style-1 shape-default">
+                {[...Array(8)].map((_, i) => (
+                    <span key={i} />
+                ))}
+            </div>
+            
+            <div className="welcome-container">
+                <div className="welcome-header">
+                    <h1>Welcome {username}!</h1>
+                    <p className="date">{today}</p>
+                </div>
 
-              <div className="dashboard-grid">
-                  <Link to="/dash/members" className="dash-card">
-                      <h2>View Members</h2>
-                  </Link>
-                  
-                  <Link to="/dash/members/new" className="dash-card">
-                      <h2>Add New Member</h2>
-                  </Link>
+                <div className="dashboard-grid">
+                    {/* Members Section */}
+                    <div className="dashboard-section">
+                        <h3 className="section-title">Members</h3>
+                        <div className="section-grid">
+                            {memberSection.map((item, index) => (
+                                <Link to={item.to} key={index} className="dash-card">
+                                    <FontAwesomeIcon icon={item.icon} className="card-icon" />
+                                    <h2>{item.text}</h2>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
 
-                  {(isManager || isAdmin) && (
-                      <>
-                          <Link to="/dash/categories" className="dash-card">
-                              <h2>View Categories</h2>
-                          </Link>
-                          <Link to="/dash/categories/new" className="dash-card">
-                              <h2>Add New Category</h2>
-                          </Link>
-                      </>
-                  )}
+                    {/* Categories Section */}
+                    {(isManager || isAdmin) && (
+                        <div className="dashboard-section">
+                            <h3 className="section-title">Categories</h3>
+                            <div className="section-grid">
+                                {categorySection.map((item, index) => (
+                                    <Link to={item.to} key={index} className="dash-card">
+                                        <FontAwesomeIcon icon={item.icon} className="card-icon" />
+                                        <h2>{item.text}</h2>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
-                  <Link to="/dash/contributions" className="dash-card">
-                      <h2>View Contributions</h2>
-                  </Link>
+                    {/* Contributions Section */}
+                    <div className="dashboard-section">
+                        <h3 className="section-title">Contributions</h3>
+                        <div className="section-grid">
+                            {contributionSection.map((item, index) => (
+                                <Link to={item.to} key={index} className="dash-card">
+                                    <FontAwesomeIcon icon={item.icon} className="card-icon" />
+                                    <h2>{item.text}</h2>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
 
-                  <Link to="/dash/contributions/new" className="dash-card">
-                      <h2>Add New Contributions</h2>
-                  </Link>
+                    {/* Reports Section */}
+                    <div className="dashboard-section">
+                        <h3 className="section-title">Reports</h3>
+                        <div className="section-grid">
+                            {reportSection.map((item, index) => (
+                                <Link to={item.to} key={index} className="dash-card">
+                                    <FontAwesomeIcon icon={item.icon} className="card-icon" />
+                                    <h2>{item.text}</h2>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
 
-                  <Link to="/dash/contributions/search" className="dash-card">
-                      <h2>Search Contributions</h2>
-                  </Link>
-
-                  <Link to="/dash/contributions/chart" className="dash-card">
-                      <h2>Contributions Chart</h2>
-                  </Link>
-
-                  <Link to="/dash/users" className="dash-card">
-                      <h2>View User Settings</h2>
-                  </Link>
-
-                  <Link to="/dash/users/new" className="dash-card">
-                      <h2>Add New User</h2>
-                  </Link>
-
-                  <Link to="/dash/contributions/report" className="dash-card">
-                      <h2>Report</h2>
-                  </Link>
-                  <Link to="/dash/contributions/annual" className="dash-card">
-                      <h2>Annual Report</h2>
-                  </Link>
-                  <Link to="/dash/contributions/tax" className="dash-card">
-                      <h2>Tax Report</h2>
-                  </Link>
-              </div>
-          </div>
-      </section>
-  );
+                    {/* Users Section */}
+                    <div className="dashboard-section">
+                        <h3 className="section-title">Users</h3>
+                        <div className="section-grid">
+                            {userSection.map((item, index) => (
+                                <Link to={item.to} key={index} className="dash-card">
+                                    <FontAwesomeIcon icon={item.icon} className="card-icon" />
+                                    <h2>{item.text}</h2>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
 };
+
 export default Welcome
